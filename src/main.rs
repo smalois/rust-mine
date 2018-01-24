@@ -4,8 +4,6 @@ use rand::Rng;
 use std::cmp;
 
 struct Cell {
-    x_coord: i32,
-    y_coord: i32,
     is_mine: bool,
     adjacent_mines: i32,
 }
@@ -20,21 +18,14 @@ impl Cell {
     }
 }
 
-struct Board {
-}
-
-impl Board {
-
-}
-
 static WIDTH: i32 = 10;
 static HEIGHT: i32 = 8;
 static NUM_MINES: usize = 10;
 
 fn init_board(board : &mut Vec<Cell>) {
-    for y in 0..HEIGHT {
-        for x in 0..WIDTH {
-            board.push( Cell { x_coord: x, y_coord: y, is_mine: false, adjacent_mines: 0} );
+    for _ in 0..HEIGHT {
+        for _ in 0..WIDTH {
+            board.push( Cell { is_mine: false, adjacent_mines: 0} );
         }
     }
 }
@@ -60,10 +51,10 @@ fn init_cell_values(board : &mut Vec<Cell>) {
     for row in 0..HEIGHT {
         for col in 0..WIDTH {
             if board[(col + (WIDTH * row)) as usize].is_mine {
-                let nine_grid_y_bounds = (cmp::max(row - 1, 0), cmp::min(row + 1, HEIGHT - 1));
-                let nine_grid_x_bounds = (cmp::max(col - 1, 0), cmp::min(col + 1, WIDTH - 1));
-                for y in nine_grid_y_bounds.0..nine_grid_y_bounds.1 + 1 {
-                    for x in nine_grid_x_bounds.0..nine_grid_x_bounds.1 + 1 {
+                let surrounding_grid_y_bounds = (cmp::max(row - 1, 0), cmp::min(row + 1, HEIGHT - 1));
+                let surrounding_grid_x_bounds = (cmp::max(col - 1, 0), cmp::min(col + 1, WIDTH - 1));
+                for y in surrounding_grid_y_bounds.0..surrounding_grid_y_bounds.1 + 1 {
+                    for x in surrounding_grid_x_bounds.0..surrounding_grid_x_bounds.1 + 1 {
                         board[(x + y * WIDTH) as usize].add_one();
                     }
                 }
@@ -72,33 +63,35 @@ fn init_cell_values(board : &mut Vec<Cell>) {
     }
 }
 
+
 fn print_mines(board : &mut Vec<Cell>) {
-    for i in board {
-        if i.is_mine {
+    for (i, cell) in board.iter().enumerate() {
+        if cell.is_mine {
             print!("1 ");
         } else {
             print!("0 ");
         }
-        if i.x_coord == WIDTH - 1 {
+        if (i + 1) % WIDTH as usize == 0 {
             print!("\n");
         }
     }
 }
 
 fn print_board(board : &mut Vec<Cell>) {
-    for i in board {
-        print!("{} ", i.adjacent_mines);
-        if i.x_coord == WIDTH - 1 {
+    for (i, cell) in board.iter().enumerate() {
+        print!("{} ", cell.adjacent_mines);
+        if (i + 1) % WIDTH as usize == 0 {
             print!("\n");
         }
     }
 }
 
 fn main() {
-    // vec2d exist
+    // vec2d exists
     let mut board : Vec<Cell> = Vec::new();
     init_board(&mut board);
     init_mines(&mut board);
     init_cell_values(&mut board);
+    print_mines(&mut board);
     print_board(&mut board);
 }
