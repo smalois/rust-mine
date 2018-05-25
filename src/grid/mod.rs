@@ -6,8 +6,8 @@ use std::cmp;
 mod cell;
 
 pub struct Board {
-    width: i32,
-    height: i32,
+    pub width: i32,
+    pub height: i32,
     num_mines: usize,
     lost: bool,
     cells : Vec<cell::Cell>,
@@ -100,17 +100,9 @@ impl Board {
         self.lost
     }
 
-    pub fn print_mines(&self) {
-        for (i, cell) in self.cells.iter().enumerate() {
-            if cell.is_mine() {
-                print!("1 ");
-            } else {
-                print!("0 ");
-            }
-            if (i + 1) % self.width as usize == 0 {
-                print!("\n");
-            }
-        }
+    // This is temporary
+    pub fn set_lost(&mut self) {
+        self.lost = true;
     }
 
     pub fn print_board(&self) {
@@ -122,7 +114,7 @@ impl Board {
                     print!("{}", cell.num_adjacent_mines());
                 }
             } else {
-                print!("_");
+                print!("X");
             }
             if (i + 1) % self.width as usize == 0 {
                 print!("\n");
